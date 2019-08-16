@@ -1,0 +1,91 @@
+'''
+class MyOuter:
+    age=18
+    def __init__(self,name):
+        self.name=name
+
+    class MyInner:
+        def __init__(self,inner_name):
+            self.inner_name=inner_name
+
+out=MyOuter('lqz')
+inner=out.MyInner('lqz_inner')
+print(inner.inner_name)
+'''
+'''
+class MyOuter:
+    age=18
+    def __init__(self,name):
+        self.name=name
+    @classmethod
+    def outer_class_method(cls):
+        print('我是外部类的类方法')
+
+    class MyInner:
+        def __init__(self,inner_name):
+            self.inner_name=inner_name
+        def inner_method(self):
+            print('我是内部类的对象方法')
+            MyOuter.outer_class_method()
+'''
+out=MyOuter('lqz')
+inner=out.MyInner('lqz_inner')
+inner.inner_method()
+'''class Capstr(str):
+    def __new__(cls, string):
+        string = string.upper()
+        #return str.__new__(cls,string)
+        return string
+a = Capstr("asdfghjkl")
+print(a)
+
+class A(str):
+    def __new__(cls,string):
+        return str.__new__(cls,string)
+    def printself(self):
+        print("123")
+
+class B(str):
+    def __new__(cls,string):
+        return string
+    def printself(self):
+        print("123")
+
+#a=A("123")
+b=B("123")
+
+#a.printself()
+b.printself()
+'''
+'''
+class A(str):
+    def __new__(cls,string):
+        return str.__new__(cls,string)
+    def printself(self):
+        print("123")
+
+class B(str):
+    def __new__(cls,string):
+        return string
+    def printself(self):
+        print("123")
+
+a=A("123")
+b=B("123")
+
+#a.printself()
+#b.printself()
+
+print(a.__class__)
+print(b.__class__)
+'''
+def hanio(n,x,y,z):
+    if n == 1:
+        print(x+"-->"+z)
+    else:
+        hanio(n-1,x,z,y)#把前n-1个移动到y上
+        print(x+"-->"+z)#把第n个移动到z上
+        hanio(n-1,y,x,z)#把在y上的前n-1个移动到z上
+
+n = int(input("Please insert a number of hanio layers!"))
+hanio(n,'X','Y','Z')
