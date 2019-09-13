@@ -1,0 +1,89 @@
+import numpy as np
+''''
+a = [1,2,3,4,5,6]
+b = [1,4,9,16,25,36]
+c = []
+for i in range(len(a)):
+    c.append(a[i] * b[i])
+print(c)'''
+a = np.array([1,2,3,4,5,6])
+b = np.array([1,4,9,16,25,36])
+c = a * b
+d = np.array([1,2,3,4,5,6.1])
+e = np.array([1,2,3], dtype=complex)
+f = np.empty(3)
+g = np.empty([2,3])
+h = np.eye(3,4)#对角元素为1，可构造非方阵
+i = np.zeros(4)
+j = np.ones([2,3,4])#三位数组（2块3行4列）
+k = np.tri(4)#下三角单元矩阵
+l = np.random.rand(2,5)#随机生成2*5的二维数组
+m = np.random.normal(1, 0.5, size=10)#按均值为1，标准差为0。5，随机生成10个数
+type_dict = np.typeDict.values()
+n = np.array([[[1, 2], [11, 12], [5, 6]],[[-1, -2], [13, 14], [15, 3]]])
+o = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
+p = np.expand_dims(o, 0)#以垂直于三位数组的轴0进行切割，向轴0增加维度！
+q = np.expand_dims(o, 1)#以垂直于三位数组的轴1进行切割，向轴1增加维度
+r = np.expand_dims(o, 2)#以垂直于三位数组的轴2进行切割，向轴2增加维度
+s = np.squeeze(p, axis= 0)
+t = np.squeeze(q, axis= 1)
+u = np.squeeze(r, axis= 2)
+add = np.add(a, b)#全函数
+
+
+
+print(type(c))
+print(c)
+print(d)
+print(e)
+print(f)
+print(g)
+print(h)
+print(i)
+print(j)
+print(k)
+print(l)
+print(type(l))
+print(m)
+print(type_dict)
+print(n)
+print(n.shape)#读取数组形状
+print(n.ndim)#读取数组维度
+print(np.sort(n,None))#axis = None 将多位数组平铺，然后返回所有元素总的结果
+#三位数组相当于把两个二维数组叠起来，高为0轴，宽为1轴，长为2轴
+print("0轴")
+print(np.sort(n,0))
+print("1轴")
+print(np.sort(n,1))
+print("2轴")
+print(np.sort(n,2))
+print("求和")
+print(np.sum(n, 1))#对轴1进行聚合
+print("转置")
+print(np.transpose(n))
+print("array b变形")
+print(np.reshape(b,(2,3)))
+print("反转n")
+print(np.flip(n , axis= 0))#以0轴反转
+print("二维数组o")
+print(o)
+print("轴0增加一个维度")
+print(p)
+print(p.shape)
+print("删除轴0")
+print(s)
+print("轴1增加一个维度")
+print(q)
+print(q.shape)
+print("删除轴1")
+print(t)
+print("轴2增加一个维度")
+print(r)
+print(r.shape)
+print("删除轴2")
+print(u)
+print(add)
+
+
+
+
