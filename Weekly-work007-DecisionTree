@@ -1,0 +1,53 @@
+from sklearn import tree
+from sklearn.datasets import load_wine
+from sklearn.model_selection import train_test_split
+wine = load_wine()
+print(wine.data)
+print(wine.target)
+
+import pandas as pd
+wine1= pd.concat([pd.DataFrame(wine.data), pd.DataFrame(wine.target)], axis=1)
+print(wine1)
+print(wine.feature_names)
+print(wine.target_names)
+Xtrain, Xtest, Ytrain, Ytest = train_test_split(wine.data, wine.target, test_size=0.3)
+print(Xtrain.shape)
+print(wine.data.shape)
+
+clf = tree.DecisionTreeClassifier(criterion="entropy"
+                                  ,splitter="random"
+                                  ,random_state=30
+                                  )
+clf = clf.fit(Xtrain, Ytrain)
+score2 = clf.score(Xtrain, Ytrain)
+score1 = clf.score(Xtest,Ytest)
+print(score1)
+print(score2)
+
+feature_name = ['酒精','苹果酸','灰','灰的碱性','镁','总酚','类黄酮','非黄烷类酚类','花青素','颜色强度','色调','od280/od315稀释葡萄酒','脯氨酸']
+import graphviz
+dot_data = tree.export_graphviz(clf,
+                                feature_names= feature_name,
+                                class_names=["琴酒","雪莉","贝尔摩德"],
+                                filled=True,
+                                rounded=True)
+graph = graphviz.Source(dot_data)
+
+import matplotlib.pyplot as plt
+test = []
+for i in range(10):
+    clf = tree.DecisionTreeClassifier(criterion="entropy"
+                                   #   , splitter="random"
+                                      ,max_depth=i+1
+                                      , random_state=30
+                                      )
+    clf = clf.fit(Xtrain, Ytrain)
+    score = clf.score(Xtest,Ytest)
+    test.append(score)
+
+plt.plot(range(1, 11), test, color = "red", label = "max_depth")
+plt.legend()
+plt.show()
+print(clf.apply(Xtest))#返回测试样本在叶子结点的索引
+print(clf.predict(Xtest))#返回测试样本的的回归分类结果
+#4个接口 fit score apply predict
