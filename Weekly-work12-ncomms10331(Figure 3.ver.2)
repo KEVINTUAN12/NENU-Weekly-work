@@ -1,0 +1,154 @@
+import xlrd
+import networkx as nx
+import matplotlib
+import matplotlib.pyplot as plt
+
+G = nx.Graph()
+file = "/users/kevintuan/downloads/ncomms10331-s2.xls"
+'''
+def read1():
+    dkw = xlrd.open_workbook(filename=file)
+    #print(dkw.sheet_names())  # 获取所有表格名字
+    sheet1 = dkw.sheet_by_name('known drug-disease associations')  # 通过名字获取表格
+
+    dict = {}
+    for i in range(2, 405):
+        for j in range(2):  # excel一共24列
+            ctype = sheet1.cell(i, j).ctype  # 表格的数据类型
+            cell = sheet1.cell_value(i, j)
+            if ctype == 2 and cell % 1 == 0:  # 如果是整形
+                cell = int(cell)
+            title = sheet1.cell_value(1, j) #dict_title
+            value = cell
+            dict[title] = value
+        print(dict)
+#read1()'''
+Disease = []
+Drug = []
+num_dis = 0
+num_drg = 0
+Flag1 = 0
+Flag2 = 0
+'''
+def Figure_3():
+    dkw = xlrd.open_workbook(filename=file)
+    sheet1 = dkw.sheet_by_name('known drug-disease associations')  # 通过名字获取表格
+    dict = {}
+    for i in range(2, 5):#405
+        for j in range(1,2):
+            ctype = sheet1.cell(i, j).ctype  # 表格的数据类型
+            cell = sheet1.cell_value(i, j)
+            if ctype == 2 and cell % 1 == 0:  # 如果是整形
+                cell = int(cell)
+            title = sheet1.cell_value(1, j)  # dict_title
+            value = cell
+            dict[title] = value
+            print(value)
+
+            if j == 0:
+                global num_dis
+                global Flag1
+                if (i == 1):
+                    Disease.append('%s' %cell)
+                    num_dis = num_dis + 1,
+                    continue
+
+                for k in range(num_dis):
+                    if (cell==Disease[k]):
+                        Flag1 = 1
+                    if(Flag1 == 0) :
+                        Disease.append('%s' %cell)
+                        num_dis=num_dis + 1
+            else:
+                global num_drg
+                global Flag2
+                if (i == 1):
+                    Drug.append('%s' %cell)
+                    num_drg = num_drg + 1,
+                    continue
+                for l in range(num_drg):
+                    if (cell==Drug[l]):
+                        Flag2 = 1
+                    if(Flag2 == 0):
+                        Drug.append('%s' %cell)
+                        num_drg = num_drg + 1
+Figure_3()'''
+def create_disease():
+    dkw = xlrd.open_workbook(filename=file)
+    sheet1 = dkw.sheet_by_name('known drug-disease associations')  # 通过名字获取表格
+    for i in range(2, 405):  # 405
+        global Flag1
+        Flag1=0
+        for j in range(1):
+            cell = sheet1.cell_value(i, j)
+            print(cell)
+            global num_dis
+
+            for index_1 in range(num_dis):
+                if(cell==Disease[index_1]):
+                    Flag1=1
+            if (Flag1==0):
+                Disease.append('%s' %cell)
+                G.add_node('%s' %cell)
+
+                num_dis = num_dis + 1
+def create_drug():
+    dkw = xlrd.open_workbook(filename=file)
+    sheet1 = dkw.sheet_by_name('known drug-disease associations')  # 通过名字获取表格
+    for i in range(2, 405):  # 405
+        global Flag2
+        Flag2=0
+        for j in range(1,2):
+            cell = sheet1.cell_value(i, j)
+            print(cell)
+            global num_drg
+
+            for index_2 in range(num_drg):
+                if(cell==Drug[index_2]):
+                    Flag2=1
+            if (Flag2==0):
+                Drug.append('%s' %cell)
+                G.add_node('%s' %cell)
+                num_drg = num_drg + 1
+
+def figure_3():
+    global s1, s2
+    dkw = xlrd.open_workbook(filename=file)
+    sheet1 = dkw.sheet_by_name('known drug-disease associations')  # 通过名字获取表格
+  #  dict = {}
+    for i in range(2, 405):#405
+
+        for j in range(2):
+            cell = sheet1.cell_value(i, j)
+            if(j==0):
+                s1 = cell
+               # G.add_node(s1,size=50)
+            else:
+                s2 = cell
+                G.add_node(s2,node_color='r')
+               # G.node_shape(s2,'>')
+           # print(cell)
+       # G.add_nodes_from([s1, s2], size=10)
+        G.add_edge(s1,s2)
+
+
+
+#def create_drug():
+'''
+create_disease()
+create_drug()
+print(Disease)
+print(Drug)
+nx.draw(G, with_labels=True)
+plt.show()'''
+#print(Drug)
+plt.figure(dpi=300,figsize=(20,10))
+figure_3()
+nx.draw(G, with_labels=True,pos=nx.random_layout(G),font_size=10,node_size=40,width=0.2)
+#plt.rcParams['figure.figsize'] = (8.0, 4.0)
+#plt.figure(figsize=(40,20))
+#plt.rcParams['image.interpolation'] = 'nearest'
+#plt.rcParams['savefig.dpi'] = 300
+#plt.rcParams['figure.dpi'] = 300
+#plt.figure(dpi=300,figsize=(20,10))
+plt.show()
