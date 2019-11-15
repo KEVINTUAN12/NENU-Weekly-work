@@ -1,0 +1,135 @@
+'''
+important attributes
+labels_ :查看聚好的类别
+cluster_centers_:查看质心
+inertia_:总距离平方和
+predict()&fit_predict()
+模块metrics中的类silhouette_score来计算轮廓系数，返回所有样本轮廓系数均值
+模块metrics中silhouette_sample返回每个样本自己的轮廓系数
+0以上是好的越靠近1越好
+'''
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.cm as cm
+X,y = make_blobs(n_samples=500 ,n_features=2, centers=4 , random_state=1)
+'''
+#dataset subplot
+
+fig ,ax1 =plt.subplots(1)#fig画布 ax1子图
+ax1.scatter(X[:,0],X[:,1]
+            ,marker='o'#shape of the dot
+            ,s=8#size of the dot
+            )
+plt.show()'''
+'''
+#分成4组，用不同颜色表示聚类分组结果，并标出质心
+n = 4
+clustering = KMeans(n_clusters=n,random_state=0).fit(X)
+y_pred = clustering.labels_
+cent = clustering.cluster_centers_
+#print(y_pred)
+#a = clustering.predict(X)
+#print(y_pred==a)#predict()和label_属性都是返回聚好的类别
+#print(a)
+#a = clustering.cluster_centers_
+#a = clustering.inertia_
+#print(a)
+
+color = ["red","pink","orange","gray"]
+fig ,ax1 =plt.subplots(1)
+for i in range(n):
+    ax1.scatter(X[y_pred==i,0],X[y_pred==i,1]#取出所有y_pred==i的行第0列作为横坐标
+                ,marker='o'
+                ,s=8
+                ,c=color[i])
+ax1.scatter(cent[:,0],cent[:,1]
+            ,marker='x'
+            ,s=200
+            ,c="black")
+plt.show()'''
+
+
+#轮廓系数
+from sklearn.metrics import silhouette_samples
+from sklearn.metrics import silhouette_score
+'''
+#print(silhouette_samples(X,y_pred))
+print(silhouette_score(X,y_pred))'''
+for n_clusters in [2,3,4,5,6]:
+    #设定分成的簇数
+    n_clusters = n_clusters
+    #创建画布，一行两个子图
+    fig ,(ax1,ax2) = plt.subplots(1,2)
+    #画布尺寸
+    fig.set_size_inches(18,7)
+    #轮廓系数[-1, 1],我们希望轮廓系数大于0
+    #横坐标太长不利于可视化，设定x轴的取值在[-1，1]之间
+    ax1.set_xlim([-0.1, 1])
+    #设定纵坐标，从0开始，最大到X.shape[0]的取值
+    #希望每个簇能排在一起，不同簇之间有一定空隙
+    #以便我们看到不同条形图聚成的块，理解它对应哪个簇
+    #因此在x.shape[0]上，加上一个距离(n_clusters + 1) * 10留作间隔
+    ax1.set_ylim([0,X.shape[0]+ (n_clusters + 1) * 10])
+
+    clusterer = KMeans(n_clusters=n_clusters, random_state=10).fit(X)
+    cluster_labels = clusterer.labels_
+
+    silhouette_avg = silhouette_score(X, cluster_labels)
+    print("For n_clusters = ",n_clusters,
+          "The average silhouette_score is :",silhouette_avg)
+    sample_silhouette_values = silhouette_samples(X, cluster_labels)
+    y_lower = 10
+    for i  in range(n_clusters):
+        ith_cluster_silhouette_values = sample_silhouette_values[cluster_labels == i]
+        ith_cluster_silhouette_values.sort()
+        size_cluster_i = ith_cluster_silhouette_values.shape[0]
+
+        y_upper = y_lower + size_cluster_i
+        color = cm.nipy_spectral(float(i)/n_clusters)
+
+        ax1.fill_betweenx(np.arange(y_lower, y_upper)
+                          ,ith_cluster_silhouette_values
+                          ,facecolor=color
+                          ,alpha= 0.7)
+        ax1.text(-0.05
+                 ,y_lower + 0.5 * size_cluster_i
+                 ,str(i))
+        y_lower = y_upper +10
+    # 为图二设置标题，横坐标标题，纵坐标标题
+    ax1.set_title("The silhouette plot for the various clusters")
+    ax1.set_xlabel("The silhouette coefficient values")
+    ax1.set_ylabel("Cluster label")
+    #轮廓系数均值以虚线放入图中
+    ax1.axvline(x=silhouette_avg,color = "red", linestyle= "--")
+    ax1.set_yticks([])
+
+
+
+    #让x轴上的刻度显示为我们规定的列表
+    ax1.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
+    #开始对第二个图进行处理，首先获取新的颜色，这里没有用循环，因此需要一次性生成多个小数获取多个颜色
+    colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clusters)
+    ax2.scatter(X[:,0],X[:,1]
+                ,marker='o'
+                ,s = 8
+                ,c = colors)
+
+
+    #质心
+    center = clusterer.cluster_centers_
+    ax2.scatter(center[:,0],center[:,1]
+                ,marker = 'x'
+                ,c='red'
+                ,alpha=1
+                ,s=200)
+    #为图二设置标题，横坐标标题，纵坐标标题
+    ax2.set_title("The visualization of the clustered data")
+    ax2.set_xlabel("Feature space for the 1st feature")
+    ax2.set_ylabel("Feature space for the 2nd feature")
+    #为整个图设置标题
+    plt.suptitle(("Silhouette analysis for KMeans clustering on sample data with n_clusters = %d" %n_clusters)
+                ,fontsize = 14
+                ,fontweight = 'bold')
+    plt.show()
