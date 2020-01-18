@@ -1,6 +1,3 @@
-'''
-从mongodb中查询drugbank数据库,根据drugbank数据的description返回指定疾病名的所有可治疗药物的靶标
-'''
 import pymongo
 from pymongo import MongoClient
 import re
